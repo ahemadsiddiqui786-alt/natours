@@ -16,7 +16,8 @@
     "mongodb": "^7.6.0",
     "mongoose": "^9.9.4",
     "morgan": "^1.11.0",
-    "slugify": "^1.6.9"
+    "slugify": "^1.6.9",
+    "validator": "^13.15.35"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
