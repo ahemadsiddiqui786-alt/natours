@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const Tour = require('../../modules/TourModel');
+const Tour = require('../../models/TourModel');
 
 dotenv.config({ path: path.join(__dirname, '../../config.env') });
 
@@ -87,9 +87,9 @@ mongoose
         console.error('MongoDB connection failed:', error);
         process.exitCode = 1;
     });
-    if (process.argv[2] === '--import') {
-        importData();
-    }else if (process.argv[2] === '--delete') {
-        deleteData();
-    }
-     
+if (process.argv[2] === '--import') {
+    importData();
+} else if (process.argv[2] === '--delete') {
+    deleteData();
+}
+
