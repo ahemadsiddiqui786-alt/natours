@@ -26,8 +26,8 @@ const tourSchema = new mongoose.Schema({
         type: String,
         required: [true, 'A tour must have a difficulty'],
         enum: {
-           values: ['easy', 'medium', 'difficult'],
-           message: 'Difficulty is either: easy, medium, difficult'
+            values: ['easy', 'medium', 'difficult'],
+            message: 'Difficulty is either: easy, medium, difficult'
         }
     },
     ratingsAverage: {
@@ -47,13 +47,13 @@ const tourSchema = new mongoose.Schema({
     priceDiscount: {
         type: Number,
         validate: {
-          validator: function(val) {
-            // this only points to current doc on NEW document creation
-            return val < this.price;
-          },
-          message: 'Discount price ({VALUE}) should be below regular price'
-      }  
-    },    
+            validator: function (val) {
+                // this only points to current doc on NEW document creation
+                return val < this.price;
+            },
+            message: 'Discount price ({VALUE}) should be below regular price'
+        }
+    },
     summary: {
         type: String,
         trim: true,
@@ -78,11 +78,11 @@ const tourSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
- }, 
-{
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true }
-});
+},
+    {
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
+    });
 
 tourSchema.virtual('durationWeeks').get(function () {
     return this.duration / 7;
@@ -104,20 +104,20 @@ tourSchema.pre('save', function () {
 // });
 //QUERY MIDDLEWARE
 // tourSchema.pre('find', function(next){
-tourSchema.pre(/^find/, function(next){
+tourSchema.pre(/^find/, function (next) {
     this.find({ secretTour: { $ne: true } })
 
     this.start = Date.now();
-    next();
+    // next();
 });
 
-tourSchema.post(/^find/, function(docs, next) {
+tourSchema.post(/^find/, function (docs, next) {
     console.log(`Query took ${Date.now() - this.start} milliseconds!`)
     next();
 });
 
 //AGGRESSION MIDDLEWARE
-tourSchema.pre('aggregate', function(next) {
+tourSchema.pre('aggregate', function (next) {
     this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
     console.log(this.pipeline());
     next();
