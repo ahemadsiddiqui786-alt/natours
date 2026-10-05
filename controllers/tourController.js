@@ -12,7 +12,6 @@ exports.aliasTopTours = (req, res, next) => {
     // next();
 };
 exports.getAllTours = catchAsync(async (req, res, next) => {
-    console.log("GET ALL TOURS");
     console.log(req.query);
     const features = new APIFeatures(Tour.find(), req.query)
         .filter()
@@ -71,11 +70,12 @@ exports.updateTour = catchAsync(async (req, res, next) => {
     });
 });
 exports.deleteTour = catchAsync(async (req, res, next) => {
+    
     const tour = await Tour.findByIdAndDelete(req.params.id);
     if (!tour) {
         return next(new AppError('No tour found with that ID', 404));
     }
-
+    
     res.status(200).json({
         status: 'success',
         data: null
