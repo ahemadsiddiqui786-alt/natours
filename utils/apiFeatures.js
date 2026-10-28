@@ -16,7 +16,10 @@ class APIFeatures {
     }
     sort() {
         if (this.queryString.sort) {
-            const sortBy = this.queryString.sort.split(',').join();
+            const sortStr = Array.isArray(this.queryString.sort) 
+                ? this.queryString.sort.join(',') 
+                : this.queryString.sort;
+            const sortBy = sortStr.split(',').join(' ');
             this.query = this.query.sort(sortBy);
         } else {
             this.query = this.query.sort('-createdAt');
@@ -25,7 +28,10 @@ class APIFeatures {
     }
     limitFields() {
         if (this.queryString.fields) {
-            const fields = this.queryString.fields.split(',').join('');
+            const fieldsStr = Array.isArray(this.queryString.fields)
+                ? this.queryString.fields.join(',')
+                : this.queryString.fields;
+            const fields = fieldsStr.split(',').join(' ');
             this.query = this.query.select(fields);
         } else {
             this.query = this.query.select('-__v');
