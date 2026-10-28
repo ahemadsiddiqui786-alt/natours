@@ -9,7 +9,7 @@ dotenv.config({ path: path.join(__dirname, '../../config.env') });
 
 const DB = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/natours-test';
 const tours = JSON.parse(
-    fs.readFileSync(path.join(__dirname, 'tours-simple.json'), 'utf-8')
+    fs.readFileSync(path.join(__dirname, 'tours.json'), 'utf-8')
 );
 const requiredFields = [
     'name',
