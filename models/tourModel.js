@@ -1,7 +1,7 @@
 /* eslint-disable */
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-
+const User = require('./userModel');
 
 const tourSchema = new mongoose.Schema({
     name: {
@@ -85,7 +85,15 @@ const tourSchema = new mongoose.Schema({
         default: 'Point',
         enum: ['Point']
       },
-      coordinates: [Number],
+      coordinates: {
+        type: [Number],
+        validate: {
+          validator: function(val) {
+            return val.length === 2;
+          },
+          message: 'Coordinates must be [longitude, latitude]'
+        }
+      },
       address: String,
       description: String
     },
@@ -101,12 +109,19 @@ const tourSchema = new mongoose.Schema({
           description: String,
           day: Number
         }
+    ],
+    guides: [
+     {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+     }
     ]
 },
     {
         toJSON: { virtuals: true },
         toObject: { virtuals: true }
-    });
+    }
+);
 
 tourSchema.virtual('durationWeeks').get(function () {
     return this.duration / 7;
@@ -115,7 +130,18 @@ tourSchema.virtual('durationWeeks').get(function () {
 // DOCUMENT MIDDLEWARE: run before .save() and .create()
 tourSchema.pre('save', function () {
     this.slug = slugify(this.name, { lower: true });
+
+    // Remove startLocation if no valid coordinates (prevents MongoDB geo index error)
+    if (this.startLocation && (!this.startLocation.coordinates || this.startLocation.coordinates.length !== 2)) {
+        this.startLocation = undefined;
+    }
 });
+
+// tourSchema.pre('save', async function () {
+//     if (!this.guides || !this.guides.length) return;
+//     const guidesPromises = this.guides.map(async id => await User.findById(id));
+//     this.guides = await Promise.all(guidesPromises);
+// })
 
 // tourSchema.post('save', function(doc,next){
 //     console.log('Will save document...');
@@ -135,6 +161,14 @@ tourSchema.pre(/^find/, function (next) {
     // next();
 });
 
+tourSchema.pre(/^find/, function(next) {
+    this.populate({
+        path: 'guides',
+        select: '-__v -passwordChangedAt'
+    });
+    // next();
+})
+
 tourSchema.post(/^find/, function (docs, next) {
     console.log(`Query took ${Date.now() - this.start} milliseconds!`)
     next();
@@ -146,6 +180,9 @@ tourSchema.pre('aggregate', function (next) {
     console.log(this.pipeline());
     next();
 });
+
+// Create 2dsphere index for GeoJSON (sparse - only index valid points)
+tourSchema.index({ startLocation: '2dsphere' }, { sparse: true });
 
 const Tour = mongoose.model('Tour', tourSchema);
 
