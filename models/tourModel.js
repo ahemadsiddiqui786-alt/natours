@@ -89,7 +89,7 @@ const tourSchema = new mongoose.Schema({
         type: [Number],
         validate: {
           validator: function(val) {
-            return val.length === 2;
+            return Array.isArray(val) && val.length === 2;
           },
           message: 'Coordinates must be [longitude, latitude]'
         }
@@ -182,7 +182,7 @@ tourSchema.pre('aggregate', function (next) {
 });
 
 // Create 2dsphere index for GeoJSON (sparse - only index valid points)
-tourSchema.index({ startLocation: '2dsphere' }, { sparse: true });
+// tourSchema.index({ startLocation: '2dsphere' }, { sparse: true });
 
 const Tour = mongoose.model('Tour', tourSchema);
 
