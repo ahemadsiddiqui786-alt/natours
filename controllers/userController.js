@@ -13,7 +13,10 @@ const filterObj = (obj, ...allowedFields) => {
     return newObj;
 }
 
-
+exports.getMe = (req, res, next) => {
+    req.params.id = req.user.id;
+    next();
+}
 
 exports.updateMe = catchAsync(async (req, res) => {
     // 1) Create error if user POSTs to password data
