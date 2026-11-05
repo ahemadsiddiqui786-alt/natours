@@ -198,6 +198,6 @@ tourSchema.pre('aggregate', function (next) {
 // Create 2dsphere index for GeoJSON (sparse - only index valid points)
 // tourSchema.index({ startLocation: '2dsphere' }, { sparse: true });
 
-const Tour = mongoose.model('Tour', tourSchema);
+const Tour = mongoose.models.Tour || mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
