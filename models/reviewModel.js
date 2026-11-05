@@ -77,6 +77,22 @@ reviewSchema.post('save', function() {
     // next();
 })
 
+//findByIdAndUpdate
+//findByIdAndDelete
+reviewSchema.pre(/^findOneAnd/, async function() {
+    // Store the tour ID for post middleware (before doc is deleted)
+    // Use this.model.findOne() NOT this.findOne() to avoid executing the query
+    const review = await this.model.findOne(this.getQuery());
+    if (review) this._tourId = review.tour;
+});
+
+reviewSchema.post(/^findOneAnd/, async function() {
+    // Recalculate ratings after update/delete
+    if (this._tourId) {
+        await this.model.calcAverageRatings(this._tourId);
+    }
+});
+
 const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;
