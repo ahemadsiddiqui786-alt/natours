@@ -25,11 +25,13 @@ const importData = async () => {
     try {
         // Import in order: users -> tours -> reviews (due to references)
         // Use bulkWrite with upsert to bypass User model middleware (pre-save password hashing)
+        // Convert _id strings to ObjectIds
+        const { ObjectId } = mongoose.Types;
         await User.collection.bulkWrite(
             users.map((user) => ({
                 replaceOne: {
-                    filter: { _id: user._id },
-                    replacement: user,
+                    filter: { _id: new ObjectId(user._id) },
+                    replacement: { ...user, _id: new ObjectId(user._id) },
                     upsert: true,
                 },
             }))

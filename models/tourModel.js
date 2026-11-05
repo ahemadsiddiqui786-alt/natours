@@ -82,14 +82,14 @@ const tourSchema = new mongoose.Schema({
       //GeoJSON
       type: {
         type: String,
-        default: 'Point',
         enum: ['Point']
       },
       coordinates: {
         type: [Number],
         validate: {
           validator: function(val) {
-            return Array.isArray(val) && val.length === 2;
+            // Only validate if coordinates are provided and not empty
+            return !val || val.length === 0 || (Array.isArray(val) && val.length === 2);
           },
           message: 'Coordinates must be [longitude, latitude]'
         }
@@ -145,6 +145,9 @@ tourSchema.pre('save', function () {
     // Remove startLocation if no valid coordinates (prevents MongoDB geo index error)
     if (this.startLocation && (!this.startLocation.coordinates || this.startLocation.coordinates.length !== 2)) {
         this.startLocation = undefined;
+    } else if (this.startLocation && this.startLocation.coordinates && this.startLocation.coordinates.length === 2) {
+        // Ensure type is 'Point' for valid GeoJSON
+        this.startLocation.type = 'Point';
     }
 });
 

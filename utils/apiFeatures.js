@@ -8,10 +8,31 @@ class APIFeatures {
         const queryObj = { ...this.queryString };
         const excludedFields = ['page', 'sort', 'limit', 'fields'];
         excludedFields.forEach(el => delete queryObj[el]);
-        // 1B) Advanced Filtering
-        let queryStr = JSON.stringify(queryObj);
-        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `{$${match}}`);
-        this.query.find(JSON.parse(queryStr));
+        
+        // Convert nested operators and numeric values
+        const processObj = (obj) => {
+            const result = {};
+            for (const [key, value] of Object.entries(obj)) {
+                if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    // Handle operators like { gte: '500' } -> { $gte: 500 }
+                    const processed = {};
+                    for (const [op, val] of Object.entries(value)) {
+                        if (['gte', 'gt', 'lte', 'lt'].includes(op)) {
+                            processed['$' + op] = isNaN(val) ? val : Number(val);
+                        } else {
+                            processed[op] = val;
+                        }
+                    }
+                    result[key] = processed;
+                } else {
+                    result[key] = value;
+                }
+            }
+            return result;
+        };
+        
+        const processedQuery = processObj(queryObj);
+        this.query.find(processedQuery);
         return this;
     }
     sort() {
