@@ -191,11 +191,11 @@ tourSchema.post(/^find/, function (docs, next) {
 });
 
 //AGGRESSION MIDDLEWARE
-tourSchema.pre('aggregate', function (next) {
-    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-    console.log(this.pipeline());
-    next();
-});
+// tourSchema.pre('aggregate', function (next) {
+//     this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//     console.log(this.pipeline());
+//     next();
+// });
 
 // Create 2dsphere index for GeoJSON (sparse - only index valid points)
 // tourSchema.index({ startLocation: '2dsphere' }, { sparse: true });
