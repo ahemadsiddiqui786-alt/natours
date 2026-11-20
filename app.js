@@ -25,7 +25,18 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Set security HTTP headers
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://api.mapbox.com", "https://cdn.jsdelivr.net", "'sha256-cezov+uKUXC7Y7ECt0/n/uJXn4R0V/56+sGYJ0AEa9s='", "'sha256-pW3bD4JKhbWAz5rKJS7m52vpABZfeoBcO7Iq1ZzVTpU='"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://api.mapbox.com", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com"],
+      imgSrc: ["'self'", "data:", "https://api.mapbox.com", "https://*.mapbox.com"],
+      connectSrc: ["'self'", "https://api.mapbox.com", "https://*.mapbox.com", "https://cdn.jsdelivr.net"],
+    }
+  }
+}));
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
