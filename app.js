@@ -34,6 +34,7 @@ app.use(helmet({
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "data:", "https://api.mapbox.com", "https://*.mapbox.com"],
       connectSrc: ["'self'", "https://api.mapbox.com", "https://*.mapbox.com", "https://cdn.jsdelivr.net"],
+      workerSrc: ["'self'", "blob:"],
     }
   }
 }));
