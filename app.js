@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -29,11 +30,11 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://api.mapbox.com", "https://cdn.jsdelivr.net", "'sha256-cezov+uKUXC7Y7ECt0/n/uJXn4R0V/56+sGYJ0AEa9s='", "'sha256-pW3bD4JKhbWAz5rKJS7m52vpABZfeoBcO7Iq1ZzVTpU='"],
+      scriptSrc: ["'self'", "https://api.mapbox.com", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "'sha256-cezov+uKUXC7Y7ECt0/n/uJXn4R0V/56+sGYJ0AEa9s='", "'sha256-pW3bD4JKhbWAz5rKJS7m52vpABZfeoBcO7Iq1ZzVTpU='"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://api.mapbox.com", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "data:", "https://api.mapbox.com", "https://*.mapbox.com"],
-      connectSrc: ["'self'", "https://api.mapbox.com", "https://*.mapbox.com", "https://cdn.jsdelivr.net"],
+      connectSrc: ["'self'", "https://api.mapbox.com", "https://*.mapbox.com", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "http://127.0.0.1:8000", "http://localhost:8000"],
       workerSrc: ["'self'", "blob:"],
     }
   }
@@ -54,6 +55,7 @@ app.use('/api', limiter);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 // app.use(mongoSanitize({ replaceWith: '_' })); // Temporarily disabled due to Express compatibility issue
@@ -78,7 +80,7 @@ app.use(hpp({
 // Test middleware
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
-    // console.log(req.headers);
+    console.log(req.cookies);
     next();
 })
 
