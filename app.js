@@ -34,7 +34,7 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", "https://api.mapbox.com", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "data:", "https://api.mapbox.com", "https://*.mapbox.com"],
-      connectSrc: ["'self'", "https://api.mapbox.com", "https://*.mapbox.com", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "http://127.0.0.1:8000", "http://localhost:8000"],
+      connectSrc: ["'self'", "https://api.mapbox.com", "https://*.mapbox.com", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "http://127.0.0.1:8000", "http://localhost:8000", "ws://127.0.0.1:*", "ws://localhost:*"],
       workerSrc: ["'self'", "blob:"],
     }
   }
