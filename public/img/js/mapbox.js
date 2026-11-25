@@ -4,7 +4,9 @@
 // mapboxgl is available as window.mapboxgl
 
 // Mapbox map initialization
-document.addEventListener('DOMContentLoaded', () => {
+
+export const displayMap = locations => {
+  document.addEventListener('DOMContentLoaded', () => {
   const mapElement = document.getElementById('map');
   if (!mapElement) {
     console.error('Map element not found');
@@ -98,3 +100,5 @@ async function initMap(locations) {
     console.error('Mapbox error:', error);
   }
 }
+}
+
