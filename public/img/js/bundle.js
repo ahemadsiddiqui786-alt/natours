@@ -7233,7 +7233,30 @@ exports.isCancel = isCancel;
 exports.CanceledError = CanceledError;
 exports.AxiosError = AxiosError;
 exports.Axios = Axios;
-},{"./lib/axios.js":"../../../node_modules/axios/lib/axios.js"}],"login.js":[function(require,module,exports) {
+},{"./lib/axios.js":"../../../node_modules/axios/lib/axios.js"}],"alerts.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.showAlert = exports.hideAlert = void 0;
+/* eslint-disable */
+
+const hideAlert = () => {
+  const el = document.querySelector('.alert');
+  if (el) el.parentElement.removeChild(el);
+};
+
+// type is 'success' or 'error'
+exports.hideAlert = hideAlert;
+const showAlert = (type, msg) => {
+  hideAlert();
+  const markup = `<div class="alert alert--${type}">${msg}</div>`;
+  document.querySelector('body').insertAdjacentHTML('afterbegin', markup);
+  window.setTimeout(hideAlert, 5000);
+};
+exports.showAlert = showAlert;
+},{}],"login.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7241,6 +7264,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.login = void 0;
 var _axios = _interopRequireDefault(require("axios"));
+var _alerts = require("./alerts");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* eslint-disable */
 
@@ -7255,17 +7279,17 @@ const login = async (email, password) => {
       }
     });
     if (res.data.status === 'success') {
-      alert('Logged in successfully!');
+      (0, _alerts.showAlert)('success', 'Logged in successfully!');
       window.setTimeout(() => {
         location.assign('/');
       }, 1500);
     }
   } catch (err) {
-    alert(err.response.data.message);
+    (0, _alerts.showAlert)('error', err.response.data.message);
   }
 };
 exports.login = login;
-},{"axios":"../../../node_modules/axios/index.js"}],"index.js":[function(require,module,exports) {
+},{"axios":"../../../node_modules/axios/index.js","./alerts":"alerts.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 require("core-js/modules/web.timers.js");
@@ -7279,10 +7303,6 @@ var _login = require("./login");
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form');
 
-// VALUES
-const email = document.getElementById('email').value;
-const password = document.getElementById('password').value;
-
 // DELEGATION
 if (mapBox) {
   const locations = JSON.parse(mapBox.dataset.locations);
@@ -7291,6 +7311,8 @@ if (mapBox) {
 if (loginForm) {
   loginForm.addEventListener('submit', e => {
     e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
     (0, _login.login)(email, password);
   });
 }
