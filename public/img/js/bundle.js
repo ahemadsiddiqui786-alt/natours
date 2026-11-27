@@ -7262,7 +7262,7 @@ exports.showAlert = showAlert;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.login = void 0;
+exports.logout = exports.login = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _alerts = require("./alerts");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -7289,6 +7289,19 @@ const login = async (email, password) => {
   }
 };
 exports.login = login;
+const logout = async () => {
+  try {
+    const res = await (0, _axios.default)({
+      method: 'GET',
+      url: 'http://127.0.0.1:8000/api/v1/users/logout'
+    });
+    if (res.data.status = 'success') location.reload(true);
+  } catch (err) {
+    console.log(err.response);
+    (0, _alerts.showAlert)('error', 'Error logging out! Try again.');
+  }
+};
+exports.logout = logout;
 },{"axios":"../../../node_modules/axios/index.js","./alerts":"alerts.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
@@ -7302,6 +7315,7 @@ var _login = require("./login");
 // DOM ELEMENTS
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form');
+const logOutBtn = document.querySelector('.nav__el--logout');
 
 // DELEGATION
 if (mapBox) {
@@ -7315,6 +7329,9 @@ if (loginForm) {
     const password = document.getElementById('password').value;
     (0, _login.login)(email, password);
   });
+}
+if (logOutBtn) {
+  logOutBtn.addEventListener('click', _login.logout);
 }
 },{"core-js/modules/web.timers.js":"../../../node_modules/core-js/modules/web.timers.js","core-js/modules/web.immediate.js":"../../../node_modules/core-js/modules/web.immediate.js","core-js/modules/web.dom.iterable.js":"../../../node_modules/core-js/modules/web.dom.iterable.js","./mapbox":"mapbox.js","./login":"login.js"}],"../../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
